@@ -184,7 +184,7 @@ const onLogin = () => {
         border-radius: 4px;
         border: 1px solid #ccc;
         outline: none;
-        font-size: 14px;
+        font-size: 16px;
         margin-top: 24px;
       }
       input:focus {
