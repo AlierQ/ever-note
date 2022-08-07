@@ -14,10 +14,20 @@
               <div v-if="state" key="login" class="login-form">
                 <h2>用户登录</h2>
                 <div class="login">
-                  <input type="text" placeholder="用户名" />
-                  <input type="password" placeholder="密码" />
-                  <span class="info">账号密码错误　</span>
-                  <div class="button">登　录</div>
+                  <input
+                    v-model="login.username"
+                    type="text"
+                    placeholder="用户名"
+                  />
+                  <input
+                    v-model="login.password"
+                    type="password"
+                    placeholder="密　码"
+                  />
+                  <span class="info" :class="{ error: login.isError }"
+                    >{{ login.info }}　</span
+                  >
+                  <div class="button" @click="onLogin">登　录</div>
                   <div class="toggle">
                     没有账号？<span @click="toggle">去注册</span>
                   </div>
@@ -26,10 +36,20 @@
               <div v-else key="register" class="register-form">
                 <h2>注册账号</h2>
                 <div class="register">
-                  <input type="text" placeholder="用户名" />
-                  <input type="password" placeholder="密码" />
-                  <span class="info">账号密码错误　</span>
-                  <div class="button">注　册</div>
+                  <input
+                    v-model="register.username"
+                    type="text"
+                    placeholder="用户名"
+                  />
+                  <input
+                    v-model="register.password"
+                    type="password"
+                    placeholder="密　码"
+                  />
+                  <span class="info" :class="{ error: register.isError }"
+                    >{{ register.info }}　</span
+                  >
+                  <div class="button" @click="onRegister">注　册</div>
                   <div class="toggle">
                     已有帐号？<span @click="toggle">去登陆</span>
                   </div>
@@ -48,8 +68,58 @@ import { ref } from "vue";
 
 const state = ref(true);
 
+const login = ref({
+  username: "",
+  password: "",
+  info: "输入用户名和密码",
+  isError: false,
+});
+
+const register = ref({
+  username: "",
+  password: "",
+  info: "注册账号后，请记住用户名和密码",
+  isError: false,
+});
+
 const toggle = () => {
   state.value = !state.value;
+};
+
+const onRegister = () => {
+  if (!/^[\w]{3,15}$/.test(register.value.username)) {
+    register.value.isError = true;
+    register.value.info = "用户名3~15个字符，仅限于字母数字下划线";
+    return;
+  }
+  if (!/^.{6,16}$/.test(register.value.password)) {
+    register.value.isError = true;
+    register.value.info = "密码长度为6~16个字符";
+    return;
+  }
+  register.value.isError = false;
+  register.value.info = "";
+  console.log(
+    `start register..., username: ${register.value.username} , password: ${register.value.password}`
+  );
+};
+const onLogin = () => {
+  if (!/^[\w]{3,15}$/.test(login.value.username)) {
+    login.value.isError = true;
+    login.value.info = "用户名3~15个字符，仅限于字母数字下划线";
+    return;
+  }
+  if (!/^.{6,16}$/.test(login.value.password)) {
+    login.value.isError = true;
+    login.value.info = "密码长度为6~16个字符";
+    return;
+  }
+  login.value.isError = false;
+  login.value.info = "";
+
+  console.log(
+    `start login..., username: ${login.value.username} , password: ${login.value.password}`
+  );
 };
 </script>
 
@@ -134,6 +204,7 @@ const toggle = () => {
       .toggle {
         margin-top: 10px;
         text-align: center;
+        font-size: 14px;
         span {
           cursor: pointer;
           color: #06a17e;
@@ -145,12 +216,15 @@ const toggle = () => {
         }
       }
       .info {
+        color: #06a17e;
         height: 16px;
         display: inline-block;
         margin-top: 5px;
-        color: red;
         font-size: 12px;
         line-height: 16px;
+        &.error {
+          color: red;
+        }
       }
     }
   }
