@@ -10,11 +10,6 @@ const router = createRouter({
   history,
   routes: [
     {
-      path: "/",
-      name: "App",
-      component: App,
-    },
-    {
       path: "/login",
       name: "Login",
       component: Login,
