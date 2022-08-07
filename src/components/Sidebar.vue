@@ -1,30 +1,34 @@
 <template>
   <div id="sidebar">
-    <div class="sidebar-top-icons">
-      <router-link to="/note/1" title="笔记" active-class="checked">
-        <notes theme="outline" size="22" fill="#ffffff" :strokeWidth="3" />
-      </router-link>
-      <router-link to="/notebooks" title="笔记本" active-class="checked">
-        <i class="note">
-          <notebook-one
-            theme="outline"
-            size="22"
-            fill="#ffffff"
-            :strokeWidth="3"
-          />
-        </i>
-      </router-link>
-      <router-link to="/trash/2" title="回收站" active-class="checked">
-        <i class="note">
-          <delete-one
-            theme="outline"
-            size="22"
-            fill="#ffffff"
-            :strokeWidth="3"
-          />
-        </i>
-      </router-link>
+    <div class="sidebar-top">
+      <Avatar />
+      <div class="sidebar-top-icons">
+        <router-link to="/note/1" title="笔记" active-class="checked">
+          <notes theme="outline" size="22" fill="#ffffff" :strokeWidth="3" />
+        </router-link>
+        <router-link to="/notebooks" title="笔记本" active-class="checked">
+          <i class="note">
+            <notebook-one
+              theme="outline"
+              size="22"
+              fill="#ffffff"
+              :strokeWidth="3"
+            />
+          </i>
+        </router-link>
+        <router-link to="/trash/2" title="回收站" active-class="checked">
+          <i class="note">
+            <delete-one
+              theme="outline"
+              size="22"
+              fill="#ffffff"
+              :strokeWidth="3"
+            />
+          </i>
+        </router-link>
+      </div>
     </div>
+
     <div class="sidebar-bottom-icons">
       <a href="#">
         <logout theme="outline" size="22" fill="#ffffff" :strokeWidth="3" />
@@ -34,6 +38,7 @@
 </template>
 <script setup lang="ts">
 import { Notes, NotebookOne, DeleteOne, Logout } from "@icon-park/vue-next";
+import Avatar from "@/components/Avatar.vue";
 </script>
 <style scoped>
 #sidebar {
@@ -45,16 +50,34 @@ import { Notes, NotebookOne, DeleteOne, Logout } from "@icon-park/vue-next";
   align-items: center;
 }
 
-#sidebar > .sidebar-top-icons {
+#sidebar > .sidebar-top {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-#sidebar > .sidebar-top-icons > a {
-  padding: 8px 18px;
+
+#sidebar > .sidebar-top > .sidebar-top-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
 }
-#sidebar > .sidebar-bottom-icons {
-  margin-bottom: 16px;
+#sidebar > .sidebar-top > .sidebar-top-icons > a {
+  padding: 8px 18px;
+  transition: all 0.25s ease;
+}
+#sidebar > .sidebar-top > .sidebar-top-icons > a:hover {
+  background: #5d6165;
+}
+
+#sidebar > .sidebar-bottom-icons > a {
+  display: inline-block;
+  padding: 12px 18px;
+  transition: all 0.25s ease;
+}
+
+#sidebar > .sidebar-bottom-icons > a:hover {
+  background: #5d6165;
 }
 
 .checked {
