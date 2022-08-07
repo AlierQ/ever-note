@@ -17,7 +17,9 @@ import { ref } from "vue";
 const msg = ref("笔记本列表");
 </script>
 
-<style scoped>
+<style scoped lang="less">
+// 测试 引入全局less
+@import "@/assets/style/global.less";
 h1 {
   color: red;
 }
