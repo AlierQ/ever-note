@@ -9,7 +9,7 @@ import { ref } from "vue";
 const msg = ref("this is login page");
 </script>
 
-<style scoped>
+<style scoped lang="less">
 h1 {
   color: red;
 }

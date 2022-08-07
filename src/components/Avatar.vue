@@ -5,7 +5,7 @@
 import { ref } from "vue";
 const user = ref({ username: "AlierQ" });
 </script>
-<style scoped>
+<style scoped lang="less">
 span {
   display: inline-block;
   width: 32px;

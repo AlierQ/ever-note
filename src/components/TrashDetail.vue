@@ -9,7 +9,7 @@ import { ref } from "vue";
 const msg = ref("回收站笔记详情页");
 </script>
 
-<style scoped>
+<style scoped lang="less">
 h1 {
   color: yellow;
 }

@@ -40,7 +40,7 @@
 import { Notes, NotebookOne, DeleteOne, Logout } from "@icon-park/vue-next";
 import Avatar from "@/components/Avatar.vue";
 </script>
-<style scoped>
+<style scoped lang="less">
 #sidebar {
   height: 100vh;
   background: #2d333d;
@@ -48,39 +48,36 @@ import Avatar from "@/components/Avatar.vue";
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-}
-
-#sidebar > .sidebar-top {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#sidebar > .sidebar-top > .sidebar-top-icons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 15px;
-}
-#sidebar > .sidebar-top > .sidebar-top-icons > a {
-  padding: 8px 18px;
-  transition: all 0.25s ease;
-}
-#sidebar > .sidebar-top > .sidebar-top-icons > a:hover {
-  background: #5d6165;
-}
-
-#sidebar > .sidebar-bottom-icons > a {
-  display: inline-block;
-  padding: 12px 18px;
-  transition: all 0.25s ease;
-}
-
-#sidebar > .sidebar-bottom-icons > a:hover {
-  background: #5d6165;
-}
-
-.checked {
-  background: #5d6165;
+  > .sidebar-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > .sidebar-top-icons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 15px;
+      > a {
+        padding: 8px 18px;
+        transition: all 0.25s ease;
+        &:hover {
+          background: #5d6165;
+        }
+        &.checked {
+          background: #5d6165;
+        }
+      }
+    }
+  }
+  > .sidebar-bottom-icons {
+    > a {
+      display: inline-block;
+      padding: 12px 18px;
+      transition: all 0.25s ease;
+      &:hover {
+        background: #5d6165;
+      }
+    }
+  }
 }
 </style>
