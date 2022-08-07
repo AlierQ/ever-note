@@ -16,6 +16,7 @@
                 <div class="register">
                   <input type="text" placeholder="用户名" />
                   <input type="password" placeholder="密码" />
+                  <span class="info">账号密码错误　</span>
                   <div class="button">注　册</div>
                   <div class="toggle">
                     已有帐号？<span @click="toggle = !toggle">去登陆</span>
@@ -27,6 +28,7 @@
                 <div class="login">
                   <input type="text" placeholder="用户名" />
                   <input type="password" placeholder="密码" />
+                  <span class="info">账号密码错误　</span>
                   <div class="button">登　录</div>
                   <div class="toggle">
                     没有账号？<span @click="toggle = !toggle">去注册</span>
@@ -122,7 +124,7 @@ const toggle = ref(true);
         font-weight: bold;
         color: #fff;
         border-radius: 4px;
-        margin-top: 18px;
+        margin-top: 8px;
         cursor: pointer;
       }
       .toggle {
@@ -137,6 +139,14 @@ const toggle = ref(true);
             text-decoration: 2px underline #06a17e;
           }
         }
+      }
+      .info {
+        height: 16px;
+        display: inline-block;
+        margin-top: 5px;
+        color: red;
+        font-size: 12px;
+        line-height: 16px;
       }
     }
   }
