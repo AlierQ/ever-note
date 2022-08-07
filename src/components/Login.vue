@@ -11,19 +11,7 @@
               enter-active-class="animate__animated animate__bounceIn"
               leave-active-class="animate__animated animate__bounceOut"
             >
-              <div v-if="toggle" key="1" class="register-form">
-                <h2>注册账号</h2>
-                <div class="register">
-                  <input type="text" placeholder="用户名" />
-                  <input type="password" placeholder="密码" />
-                  <span class="info">账号密码错误　</span>
-                  <div class="button">注　册</div>
-                  <div class="toggle">
-                    已有帐号？<span @click="toggle = !toggle">去登陆</span>
-                  </div>
-                </div>
-              </div>
-              <div v-else key="2" class="login-form">
+              <div v-if="state" key="login" class="login-form">
                 <h2>用户登录</h2>
                 <div class="login">
                   <input type="text" placeholder="用户名" />
@@ -31,7 +19,19 @@
                   <span class="info">账号密码错误　</span>
                   <div class="button">登　录</div>
                   <div class="toggle">
-                    没有账号？<span @click="toggle = !toggle">去注册</span>
+                    没有账号？<span @click="toggle">去注册</span>
+                  </div>
+                </div>
+              </div>
+              <div v-else key="register" class="register-form">
+                <h2>注册账号</h2>
+                <div class="register">
+                  <input type="text" placeholder="用户名" />
+                  <input type="password" placeholder="密码" />
+                  <span class="info">账号密码错误　</span>
+                  <div class="button">注　册</div>
+                  <div class="toggle">
+                    已有帐号？<span @click="toggle">去登陆</span>
                   </div>
                 </div>
               </div>
@@ -46,7 +46,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const toggle = ref(true);
+const state = ref(true);
+
+const toggle = () => {
+  state.value = !state.value;
+};
 </script>
 
 <style scoped lang="less">
