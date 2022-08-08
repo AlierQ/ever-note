@@ -67,13 +67,11 @@
 import { ref } from "vue";
 import Auth from "@/api/auth";
 import { useRouter } from "vue-router";
-
-Auth.get_login_state().then((data) => {
-  console.log(data);
-});
+import { useUserStateStore } from "@/stores/userState";
 
 const state = ref(true);
 const router = useRouter();
+const userState = useUserStateStore();
 
 const login = ref({
   username: "",
@@ -118,6 +116,7 @@ const onRegister = () => {
   }
   register.value.isError = false;
   register.value.info = "";
+
   Auth.register({
     username: register.value.username,
     password: register.value.password,
@@ -134,6 +133,7 @@ const onRegister = () => {
       register.value.info = err.response.data.msg;
     });
 };
+
 const onLogin = () => {
   if (!/^[\w]{3,15}$/.test(login.value.username)) {
     login.value.isError = true;
@@ -156,6 +156,12 @@ const onLogin = () => {
       // 重置提示信息
       login.value.isError = false;
       login.value.info = "";
+
+      // 将用户登录状态添加到pinia
+      Auth.get_login_state().then((data) => {
+        userState.setUserState(data);
+      });
+
       // 跳转到笔记本页面
       router.push("/notebooks");
     })
