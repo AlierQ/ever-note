@@ -128,9 +128,18 @@ const onLogin = () => {
   Auth.login({
     username: login.value.username,
     password: login.value.password,
-  }).then((data) => {
-    console.log(data);
-  });
+  })
+    .then((data) => {
+      // 重置提示信息
+      login.value.isError = false;
+      login.value.info = "";
+      console.log(data);
+    })
+    .catch((err) => {
+      // 设置错误提示信息
+      login.value.isError = true;
+      login.value.info = err.response.data.msg;
+    });
 };
 </script>
 

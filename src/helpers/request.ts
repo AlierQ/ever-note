@@ -35,7 +35,7 @@ export default function request(url: string, type = "GET", data = {}) {
         }
       })
       .catch((err) => {
-        reject(console.error({ msg: "网络异常" }));
+        reject(err);
       });
   });
 }
