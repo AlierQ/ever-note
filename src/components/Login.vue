@@ -66,12 +66,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Auth from "@/api/auth";
+import { useRouter } from "vue-router";
 
 Auth.get_login_state().then((data) => {
   console.log(data);
 });
 
 const state = ref(true);
+const router = useRouter();
 
 const login = ref({
   username: "",
@@ -133,7 +135,8 @@ const onLogin = () => {
       // 重置提示信息
       login.value.isError = false;
       login.value.info = "";
-      console.log(data);
+      // 跳转到笔记本页面
+      router.push("/notebooks");
     })
     .catch((err) => {
       // 设置错误提示信息
