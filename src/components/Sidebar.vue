@@ -30,16 +30,29 @@
     </div>
 
     <div class="sidebar-bottom-icons">
-      <a href="#">
+      <a href="javascript:void(0);" @click="onLogout">
         <logout theme="outline" size="22" fill="#ffffff" :strokeWidth="3" />
       </a>
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { Notes, NotebookOne, DeleteOne, Logout } from "@icon-park/vue-next";
 import Avatar from "@/components/Avatar.vue";
+import request from "@/helpers/request";
+
+request("/auth").then((data) => {
+  console.log(data);
+});
+
+const onLogout = () => {
+  request("/auth/logout").then((data) => {
+    console.log(data);
+  });
+};
 </script>
+
 <style scoped lang="less">
 #sidebar {
   height: 100vh;

@@ -67,10 +67,6 @@
 import { ref } from "vue";
 import request from "@/helpers/request";
 
-request("/auth").then((data) => {
-  console.log(data);
-});
-
 const state = ref(true);
 
 const login = ref({
