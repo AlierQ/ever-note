@@ -71,7 +71,7 @@ import { useUserStateStore } from "@/stores/userState";
 
 const state = ref(true);
 const router = useRouter();
-const userState = useUserStateStore();
+const userStateStore = useUserStateStore();
 
 const login = ref({
   username: "",
@@ -159,11 +159,10 @@ const onLogin = () => {
 
       // 将用户登录状态添加到pinia
       Auth.get_login_state().then((data) => {
-        userState.setUserState(data);
+        userStateStore.setUserState(data);
+        // 跳转到笔记本页面
+        router.push("/notebooks");
       });
-
-      // 跳转到笔记本页面
-      router.push("/notebooks");
     })
     .catch((err) => {
       // 设置错误提示信息
