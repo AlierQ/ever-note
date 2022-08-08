@@ -90,6 +90,18 @@ const register = ref({
 });
 
 const toggle = () => {
+  login.value = {
+    username: "",
+    password: "",
+    info: "输入用户名和密码",
+    isError: false,
+  };
+  register.value = {
+    username: "",
+    password: "",
+    info: "注册账号后，请记住用户名和密码",
+    isError: false,
+  };
   state.value = !state.value;
 };
 
@@ -112,7 +124,10 @@ const onRegister = () => {
   })
     .then((data) => {
       register.value.isError = false;
-      register.value.info = "";
+      register.value.info = "注册成功！";
+      setTimeout(() => {
+        toggle();
+      }, 500);
     })
     .catch((err) => {
       register.value.isError = true;
