@@ -109,9 +109,15 @@ const onRegister = () => {
   Auth.register({
     username: register.value.username,
     password: register.value.password,
-  }).then((data) => {
-    console.log(data);
-  });
+  })
+    .then((data) => {
+      register.value.isError = false;
+      register.value.info = "";
+    })
+    .catch((err) => {
+      register.value.isError = true;
+      register.value.info = err.response.data.msg;
+    });
 };
 const onLogin = () => {
   if (!/^[\w]{3,15}$/.test(login.value.username)) {
