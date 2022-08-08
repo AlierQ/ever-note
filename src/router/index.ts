@@ -1,5 +1,4 @@
 import { createWebHashHistory, createRouter } from "vue-router";
-import App from "@/App.vue";
 import Login from "@/components/Login.vue";
 import NotebookList from "@/components/NotebookList.vue";
 import NoteDetail from "@/components/NoteDetail.vue";

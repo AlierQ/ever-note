@@ -7,13 +7,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useUserStateStore } from "@/stores/userState";
+import Auth from "@/api/auth";
 
 const router = useRouter();
-const userStateStore = useUserStateStore();
-if (!userStateStore.userState.isLogin) {
-  router.push("/login");
-}
+
+Auth.get_login_state().then((ref: any) => {
+  if (!ref.isLogin) {
+    router.push("/login");
+  }
+});
 const msg = ref("笔记本详情页");
 </script>
 

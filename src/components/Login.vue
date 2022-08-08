@@ -67,11 +67,11 @@
 import { ref } from "vue";
 import Auth from "@/api/auth";
 import { useRouter } from "vue-router";
-import { useUserStateStore } from "@/stores/userState";
+import { getCurrentInstance } from "vue";
 
 const state = ref(true);
 const router = useRouter();
-const userStateStore = useUserStateStore();
+const instance = getCurrentInstance();
 
 const login = ref({
   username: "",
@@ -157,12 +157,13 @@ const onLogin = () => {
       login.value.isError = false;
       login.value.info = "";
 
-      // 将用户登录状态添加到pinia
-      Auth.get_login_state().then((data) => {
-        userStateStore.setUserState(data);
-        // 跳转到笔记本页面
-        router.push("/notebooks");
+      // 发布全局事件总线
+      instance?.proxy?.$Bus.emit("userInfo", {
+        username: login.value.username,
       });
+
+      // 跳转到笔记本页面
+      router.push("/notebooks");
     })
     .catch((err) => {
       // 设置错误提示信息

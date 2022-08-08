@@ -4,8 +4,19 @@ import "@/style.css";
 import App from "@/App.vue";
 import router from "@/router";
 import { createPinia } from "pinia";
+import mitt from "mitt";
+
 const app = createApp(App);
 const pinia = createPinia();
+const Mit = mitt();
+
+declare module "vue" {
+  export interface ComponentCustomProperties {
+    $Bus: typeof Mit;
+  }
+}
+
+app.config.globalProperties.$Bus = Mit;
 
 app.use(router);
 app.use(pinia);
