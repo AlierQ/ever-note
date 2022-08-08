@@ -41,6 +41,9 @@
 import { Notes, NotebookOne, DeleteOne, Logout } from "@icon-park/vue-next";
 import Avatar from "@/components/Avatar.vue";
 import Auth from "@/api/auth";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 Auth.get_login_state().then((data) => {
   console.log(data);
@@ -48,7 +51,7 @@ Auth.get_login_state().then((data) => {
 
 const onLogout = () => {
   Auth.logout().then((data) => {
-    console.log(data);
+    router.push("/login");
   });
 };
 </script>
