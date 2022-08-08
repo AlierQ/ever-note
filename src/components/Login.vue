@@ -65,6 +65,11 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import request from "@/helpers/request";
+
+request("/auth").then((data) => {
+  console.log(data);
+});
 
 const state = ref(true);
 
@@ -116,10 +121,12 @@ const onLogin = () => {
   }
   login.value.isError = false;
   login.value.info = "";
-
-  console.log(
-    `start login..., username: ${login.value.username} , password: ${login.value.password}`
-  );
+  request("/auth/login", "POST", {
+    username: login.value.username,
+    password: login.value.password,
+  }).then((data) => {
+    console.log(data);
+  });
 };
 </script>
 
