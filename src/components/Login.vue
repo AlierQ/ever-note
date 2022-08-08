@@ -65,7 +65,11 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import request from "@/helpers/request";
+import Auth from "@/api/auth";
+
+Auth.get_login_state().then((data) => {
+  console.log(data);
+});
 
 const state = ref(true);
 
@@ -100,9 +104,12 @@ const onRegister = () => {
   }
   register.value.isError = false;
   register.value.info = "";
-  console.log(
-    `start register..., username: ${register.value.username} , password: ${register.value.password}`
-  );
+  Auth.register({
+    username: register.value.username,
+    password: register.value.password,
+  }).then((data) => {
+    console.log(data);
+  });
 };
 const onLogin = () => {
   if (!/^[\w]{3,15}$/.test(login.value.username)) {
@@ -117,7 +124,8 @@ const onLogin = () => {
   }
   login.value.isError = false;
   login.value.info = "";
-  request("/auth/login", "POST", {
+
+  Auth.login({
     username: login.value.username,
     password: login.value.password,
   }).then((data) => {

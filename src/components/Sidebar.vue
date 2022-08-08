@@ -40,14 +40,14 @@
 <script setup lang="ts">
 import { Notes, NotebookOne, DeleteOne, Logout } from "@icon-park/vue-next";
 import Avatar from "@/components/Avatar.vue";
-import request from "@/helpers/request";
+import Auth from "@/api/auth";
 
-request("/auth").then((data) => {
+Auth.get_login_state().then((data) => {
   console.log(data);
 });
 
 const onLogout = () => {
-  request("/auth/logout").then((data) => {
+  Auth.logout().then((data) => {
     console.log(data);
   });
 };
