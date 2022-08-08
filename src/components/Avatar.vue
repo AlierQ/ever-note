@@ -1,5 +1,5 @@
 <template>
-  <span>{{ slug }}</span>
+  <span :title="userStateStore.userState.data.username">{{ slug }}</span>
 </template>
 
 <script setup lang="ts">
