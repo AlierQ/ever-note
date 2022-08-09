@@ -26,7 +26,7 @@
             <span>
               <span>{{ notebook.noteCounts }}</span>
             </span>
-            <span>{{ notebook.updatedAt.slice(0, 10) }}</span>
+            <span>{{ format_date(notebook.updatedAt) }}</span>
             <span @click.prevent="onUpdateNotebook(notebook.id, notebook.title)"
               >编辑</span
             >
@@ -44,13 +44,15 @@ import { useRouter } from "vue-router";
 import Auth from "@/api/auth";
 import { Plus, NotebookOne } from "@icon-park/vue-next";
 import Notebooks from "@/api/notebooks";
-
+import { formatDate } from "@/helpers/util";
 type Notebook = {
   id: number;
   noteCounts: number;
   title: string;
   updatedAt: string;
 };
+
+const format_date = formatDate;
 
 const router = useRouter();
 
