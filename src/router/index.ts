@@ -9,6 +9,10 @@ const router = createRouter({
   history,
   routes: [
     {
+      path: "/",
+      component: NotebookList,
+    },
+    {
       path: "/login",
       name: "Login",
       component: Login,
