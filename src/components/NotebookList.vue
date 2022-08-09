@@ -7,7 +7,7 @@
       </a>
     </header>
     <main>
-      <h3>笔记本列表(10)</h3>
+      <h3>笔记本列表({{ notebookList?.length }})</h3>
       <div class="notebook-list">
         <a
           href="javascript:void(0);"
@@ -45,6 +45,8 @@ import Auth from "@/api/auth";
 import { Plus, NotebookOne } from "@icon-park/vue-next";
 import Notebooks from "@/api/notebooks";
 import { formatDate } from "@/helpers/util";
+import { ElMessage, ElMessageBox } from "element-plus";
+
 type Notebook = {
   id: number;
   noteCounts: number;
@@ -72,38 +74,87 @@ const initNotebookList = () => {
 initNotebookList();
 
 const onUpdateNotebook = (id: number, oldTitle: string) => {
-  const title = prompt("请修改标题:", oldTitle);
-  if (title !== "" && title !== undefined && title !== null) {
-    Notebooks.updateNotebook(id, { title }).then(() => {
-      notebookList.value?.forEach((notebook) => {
-        if (notebook.id === id) {
-          notebook.title = title;
-        }
+  ElMessageBox.prompt("请输入新的名称", "修改名称", {
+    confirmButtonText: "修改",
+    cancelButtonText: "取消",
+    inputValue: oldTitle,
+  })
+    .then(({ value }) => {
+      Notebooks.updateNotebook(id, { title: value }).then(() => {
+        notebookList.value?.forEach((notebook) => {
+          if (notebook.id === id) {
+            notebook.title = value;
+          }
+        });
+        ElMessage({
+          type: "success",
+          message: `修改成功`,
+        });
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: `取消修改`,
       });
     });
-  }
 };
 
 const onDeleteNotebook = (id: number) => {
-  if (confirm("是否删除该笔记本？"))
-    Notebooks.deleteNotebook(id).then(() => {
-      notebookList.value = notebookList.value?.filter((notebook) => {
-        return notebook.id !== id;
+  ElMessageBox.confirm("确认要删除该笔记本吗?", "删除笔记本", {
+    confirmButtonText: "删除",
+    cancelButtonText: "取消",
+    confirmButtonClass: "danger",
+    type: "error",
+  })
+    .then(() => {
+      Notebooks.deleteNotebook(id).then(() => {
+        notebookList.value = notebookList.value?.filter((notebook) => {
+          return notebook.id !== id;
+        });
+        ElMessage({
+          type: "success",
+          message: "删除成功",
+        });
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消删除",
       });
     });
 };
 
 const onAddNotebook = () => {
-  const title = prompt("请输入笔记本名称:");
-  if (title !== "" && title !== undefined && title !== null) {
-    Notebooks.addNotebook({ title }).then((res: any) => {
-      res.data.noteCounts = 0;
-      notebookList.value?.unshift(res.data);
+  ElMessageBox.prompt("请输入名称", "新建笔记本", {
+    confirmButtonText: "创建",
+    cancelButtonText: "取消",
+  })
+    .then(({ value }) => {
+      Notebooks.addNotebook({ title: value }).then((res: any) => {
+        res.data.noteCounts = 0;
+        notebookList.value?.unshift(res.data);
+        ElMessage({
+          type: "success",
+          message: `创建成功`,
+        });
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: `取消创建`,
+      });
     });
-  }
 };
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 @import "@/assets/style/notebook-list.less";
+
+.danger {
+  background: #f56c6c !important;
+  border: #f56c6c !important;
+}
 </style>
