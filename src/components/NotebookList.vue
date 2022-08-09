@@ -1,7 +1,7 @@
 <template>
   <div id="notebook-list">
     <header>
-      <a href="javascript:void(0);" @click="onAddNotebook">
+      <a href="javascript:void(0);" @click.prevent="onAddNotebook">
         <plus theme="outline" size="22" fill="#a2a2a2" :strokeWidth="3" />
         <span>新建笔记本</span>
       </a>
@@ -27,8 +27,8 @@
               <span>{{ notebook.noteCounts }}</span>
             </span>
             <span>{{ notebook.updatedAt.slice(0, 10) }}</span>
-            <span @click="onUpdateNotebook(notebook.id)">编辑</span>
-            <span @click="onDeleteNotebook(notebook.id)">删除</span>
+            <span @click.prevent="onUpdateNotebook(notebook.id)">编辑</span>
+            <span @click.prevent="onDeleteNotebook(notebook.id)">删除</span>
           </div>
         </a>
       </div>
@@ -67,21 +67,35 @@ const initNotebookList = () => {
   });
 };
 initNotebookList();
+
 const onUpdateNotebook = (id: number) => {
   const title = prompt("请输入标题:");
   if (title !== "" && title !== undefined && title !== null) {
-    Notebooks.updateNotebook(id, { title }).then(initNotebookList);
+    Notebooks.updateNotebook(id, { title }).then(() => {
+      notebookList.value?.forEach((notebook) => {
+        if (notebook.id === id) {
+          notebook.title = title;
+        }
+      });
+    });
   }
 };
 
 const onDeleteNotebook = (id: number) => {
-  Notebooks.deleteNotebook(id).then(initNotebookList);
+  Notebooks.deleteNotebook(id).then(() => {
+    notebookList.value = notebookList.value?.filter((notebook) => {
+      return notebook.id !== id;
+    });
+  });
 };
 
 const onAddNotebook = () => {
   const title = prompt("请输入笔记本名称:");
   if (title !== "" && title !== undefined && title !== null) {
-    Notebooks.addNotebook({ title }).then(initNotebookList);
+    Notebooks.addNotebook({ title }).then((res: any) => {
+      res.data.noteCounts = 0;
+      notebookList.value?.unshift(res.data);
+    });
   }
 };
 </script>
