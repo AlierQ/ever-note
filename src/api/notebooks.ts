@@ -13,7 +13,7 @@ export default {
     return new Promise((resolve, reject) => {
       request(URL.GET)
         .then((res: any) => {
-          const temp = res.data.sort((notebook1: any, notebook2: any) => {
+          res.data = res.data.sort((notebook1: any, notebook2: any) => {
             {
               return (
                 new Date(notebook2.createdAt).getTime() -
@@ -21,8 +21,6 @@ export default {
               );
             }
           });
-          console.log(temp);
-          res.data = temp;
           resolve(res);
         })
         .catch((err) => {

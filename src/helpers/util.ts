@@ -3,7 +3,6 @@ export function formatDate(dateStr: any) {
   let time = dateObj.getTime();
   let now = new Date().getTime();
   let space = now - time;
-  console.log(time);
 
   let str = "";
   switch (true) {
