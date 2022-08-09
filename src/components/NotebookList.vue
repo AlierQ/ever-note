@@ -1,7 +1,7 @@
 <template>
   <div id="notebook-list">
     <header>
-      <a href="javascript:void(0);">
+      <a href="javascript:void(0);" @click="onAddNotebook">
         <plus theme="outline" size="22" fill="#a2a2a2" :strokeWidth="3" />
         <span>新建笔记本</span>
       </a>
@@ -63,6 +63,7 @@ Auth.get_login_state().then((ref: any) => {
 const initNotebookList = () => {
   Notebooks.getAllNotebook().then((res: any) => {
     notebookList.value = res.data;
+    notebookList.value?.reverse();
   });
 };
 initNotebookList();
@@ -75,6 +76,13 @@ const onUpdateNotebook = (id: number) => {
 
 const onDeleteNotebook = (id: number) => {
   Notebooks.deleteNotebook(id).then(initNotebookList);
+};
+
+const onAddNotebook = () => {
+  const title = prompt("请输入笔记本名称:");
+  if (title !== "" && title !== undefined && title !== null) {
+    Notebooks.addNotebook({ title }).then(initNotebookList);
+  }
 };
 </script>
 
