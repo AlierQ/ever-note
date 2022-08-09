@@ -65,7 +65,6 @@ Auth.get_login_state().then((ref: any) => {
 const initNotebookList = () => {
   Notebooks.getAllNotebook().then((res: any) => {
     notebookList.value = res.data;
-    notebookList.value?.reverse();
   });
 };
 initNotebookList();

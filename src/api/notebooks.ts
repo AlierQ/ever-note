@@ -1,4 +1,5 @@
 import request from "@/helpers/request";
+import { resolve } from "path";
 
 const URL = {
   GET: "/notebooks",
@@ -9,7 +10,18 @@ const URL = {
 
 export default {
   getAllNotebook() {
-    return request(URL.GET);
+    return new Promise((resolve, reject) => {
+      request(URL.GET)
+        .then((res: any) => {
+          res.data = res.data.sort((notebook1: any, notebook2: any) =>
+            notebook1.createAt < notebook2.createAt ? 1 : -1
+          );
+          resolve(res);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   },
   updateNotebook(notebookId: number, { title = "" } = { title: "" }) {
     return request(URL.UPDATE.replace(":id", notebookId.toString()), "PATCH", {
