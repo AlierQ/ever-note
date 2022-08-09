@@ -26,7 +26,7 @@
             <span>
               <span>{{ notebook.noteCounts }}</span>
             </span>
-            <span>{{ format_date(notebook.updatedAt) }}</span>
+            <span>{{ format_date(notebook.createdAt) }}</span>
             <span @click.prevent="onUpdateNotebook(notebook.id, notebook.title)"
               >编辑</span
             >
@@ -51,6 +51,7 @@ type Notebook = {
   id: number;
   noteCounts: number;
   title: string;
+  createdAt: string;
   updatedAt: string;
 };
 
