@@ -81,17 +81,24 @@ const onUpdateNotebook = (id: number, oldTitle: string) => {
     inputValue: oldTitle,
   })
     .then(({ value }) => {
-      Notebooks.updateNotebook(id, { title: value }).then(() => {
-        notebookList.value?.forEach((notebook) => {
-          if (notebook.id === id) {
-            notebook.title = value;
-          }
+      Notebooks.updateNotebook(id, { title: value })
+        .then(() => {
+          notebookList.value?.forEach((notebook) => {
+            if (notebook.id === id) {
+              notebook.title = value;
+            }
+          });
+          ElMessage({
+            type: "success",
+            message: `修改成功`,
+          });
+        })
+        .catch((err) => {
+          ElMessage({
+            type: "error",
+            message: `修改失败`,
+          });
         });
-        ElMessage({
-          type: "success",
-          message: `修改成功`,
-        });
-      });
     })
     .catch(() => {
       ElMessage({
@@ -109,15 +116,22 @@ const onDeleteNotebook = (id: number) => {
     type: "error",
   })
     .then(() => {
-      Notebooks.deleteNotebook(id).then(() => {
-        notebookList.value = notebookList.value?.filter((notebook) => {
-          return notebook.id !== id;
+      Notebooks.deleteNotebook(id)
+        .then(() => {
+          notebookList.value = notebookList.value?.filter((notebook) => {
+            return notebook.id !== id;
+          });
+          ElMessage({
+            type: "success",
+            message: "删除成功",
+          });
+        })
+        .catch((err) => {
+          ElMessage({
+            type: "error",
+            message: `删除失败`,
+          });
         });
-        ElMessage({
-          type: "success",
-          message: "删除成功",
-        });
-      });
     })
     .catch(() => {
       ElMessage({
@@ -131,16 +145,25 @@ const onAddNotebook = () => {
   ElMessageBox.prompt("请输入名称", "新建笔记本", {
     confirmButtonText: "创建",
     cancelButtonText: "取消",
+    inputPattern: /^.{1,30}$/,
+    inputErrorMessage: "标题不能为空，且不能超过30个字符！",
   })
     .then(({ value }) => {
-      Notebooks.addNotebook({ title: value }).then((res: any) => {
-        res.data.noteCounts = 0;
-        notebookList.value?.unshift(res.data);
-        ElMessage({
-          type: "success",
-          message: `创建成功`,
+      Notebooks.addNotebook({ title: value })
+        .then((res: any) => {
+          res.data.noteCounts = 0;
+          notebookList.value?.unshift(res.data);
+          ElMessage({
+            type: "success",
+            message: `创建成功`,
+          });
+        })
+        .catch((err) => {
+          ElMessage({
+            type: "error",
+            message: `创建失败`,
+          });
         });
-      });
     })
     .catch(() => {
       ElMessage({
