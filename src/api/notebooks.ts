@@ -13,9 +13,16 @@ export default {
     return new Promise((resolve, reject) => {
       request(URL.GET)
         .then((res: any) => {
-          res.data = res.data.sort((notebook1: any, notebook2: any) =>
-            notebook1.createAt < notebook2.createAt ? 1 : -1
-          );
+          const temp = res.data.sort((notebook1: any, notebook2: any) => {
+            {
+              return (
+                new Date(notebook2.createdAt).getTime() -
+                new Date(notebook1.createdAt).getTime()
+              );
+            }
+          });
+          console.log(temp);
+          res.data = temp;
           resolve(res);
         })
         .catch((err) => {
