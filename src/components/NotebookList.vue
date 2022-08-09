@@ -27,7 +27,9 @@
               <span>{{ notebook.noteCounts }}</span>
             </span>
             <span>{{ notebook.updatedAt.slice(0, 10) }}</span>
-            <span @click.prevent="onUpdateNotebook(notebook.id)">编辑</span>
+            <span @click.prevent="onUpdateNotebook(notebook.id, notebook.title)"
+              >编辑</span
+            >
             <span @click.prevent="onDeleteNotebook(notebook.id)">删除</span>
           </div>
         </a>
@@ -68,8 +70,8 @@ const initNotebookList = () => {
 };
 initNotebookList();
 
-const onUpdateNotebook = (id: number) => {
-  const title = prompt("请输入标题:");
+const onUpdateNotebook = (id: number, oldTitle: string) => {
+  const title = prompt("请修改标题:", oldTitle);
   if (title !== "" && title !== undefined && title !== null) {
     Notebooks.updateNotebook(id, { title }).then(() => {
       notebookList.value?.forEach((notebook) => {
@@ -82,11 +84,12 @@ const onUpdateNotebook = (id: number) => {
 };
 
 const onDeleteNotebook = (id: number) => {
-  Notebooks.deleteNotebook(id).then(() => {
-    notebookList.value = notebookList.value?.filter((notebook) => {
-      return notebook.id !== id;
+  if (confirm("是否删除该笔记本？"))
+    Notebooks.deleteNotebook(id).then(() => {
+      notebookList.value = notebookList.value?.filter((notebook) => {
+        return notebook.id !== id;
+      });
     });
-  });
 };
 
 const onAddNotebook = () => {
