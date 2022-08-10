@@ -11,7 +11,7 @@
       <div class="notebook-list">
         <router-link
           v-for="notebook in notebookList"
-          :to="`/note?notebookID=${notebook.id}`"
+          :to="`/note?notebookId=${notebook.id}`"
           href="javascript:void(0);"
           class="notebook"
           key="notebook.id"
