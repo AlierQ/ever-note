@@ -150,6 +150,7 @@ const onAddNotebook = () => {
     confirmButtonText: "创建",
     cancelButtonText: "取消",
     inputPattern: /^.{1,30}$/,
+    inputValue: "新建笔记本",
     inputErrorMessage: "标题不能为空，且不能超过30个字符！",
   })
     .then(({ value }) => {
