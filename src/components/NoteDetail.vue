@@ -8,7 +8,7 @@
           <div class="note-bar">
             <span> 创建日期: {{ formatDate(currentNote.createdAt) }}</span>
             <span> 更新日期: {{ formatDate(currentNote.updatedAt) }}</span>
-            <span> {{ currentNote.stateText }}</span>
+            <span> {{ stateText }}</span>
             <span class="icon-fullscreen" @click="togglePreview">
               <preview-close
                 v-show="!preview"
@@ -37,15 +37,19 @@
             <input
               type="text"
               placeholder="输入标题"
+              @input="updateNote"
+              @keydown="stateText = '正在输入...'"
               v-model="currentNote.title"
             />
           </div>
           <div class="editor">
             <textarea
               placeholder="输入内容, 支持 markdown 语法"
+              @input="updateNote"
+              @keydown="stateText = '正在输入...'"
               v-model="currentNote.content"
             ></textarea>
-            <div class="preview markdown-body"></div>
+            <div class="preview markdown-body" hidden></div>
           </div>
         </div>
       </div>
@@ -57,10 +61,13 @@
 import { ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Auth from "@/api/auth";
+import Notes from "@/api/notes";
 import NoteSidebar from "@/components/NoteSidebar.vue";
 import { DeleteOne, PreviewClose, PreviewOpen } from "@icon-park/vue-next";
 import { onBeforeRouteUpdate } from "vue-router";
 import { formatDate } from "@/helpers/util";
+import { ElMessage, ElMessageBox } from "element-plus";
+import _ from "lodash";
 
 const router = useRouter();
 
@@ -75,14 +82,11 @@ const currentNote = ref({
   content: "",
   createdAt: "",
   updatedAt: "",
-  stateText: "",
 });
 
 const notes = ref();
 
-const togglePreview = () => {
-  preview.value = !preview.value;
-};
+const stateText = ref("笔记未改动");
 
 Auth.get_login_state().then((ref: any) => {
   if (!ref.isLogin) {
@@ -109,6 +113,32 @@ onBeforeRouteUpdate((to, from) => {
     currentNote.value.id = undefined;
   }
 });
+
+const togglePreview = () => {
+  preview.value = !preview.value;
+};
+
+// 使用了第三方节流
+const updateNote = _.debounce(() => {
+  console.log("写东西了");
+  Notes.updateNote(
+    { noteId: Number(currentNote.value.id) },
+    {
+      title: currentNote.value.title,
+      content: currentNote.value.content,
+    }
+  )
+    .then((ref) => {
+      stateText.value = "已保存";
+    })
+    .catch((err) => {
+      ElMessage({
+        type: "error",
+        message: err.response.data.msg,
+      });
+      stateText.value = "保存失败";
+    });
+}, 300);
 </script>
 
 <style scoped lang="less">
