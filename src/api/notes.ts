@@ -11,7 +11,15 @@ export default {
   getAllNote({ notebookId }: { notebookId: number }) {
     return new Promise((resolve, reject) => {
       request(URL.GET.replace(":notebookId", notebookId.toString()))
-        .then((res) => {
+        .then((res: any) => {
+          res.data = res.data.sort((note1: any, note2: any) => {
+            {
+              return (
+                new Date(note2.updatedAt).getTime() -
+                new Date(note1.updatedAt).getTime()
+              );
+            }
+          });
           resolve(res);
         })
         .catch((err) => {

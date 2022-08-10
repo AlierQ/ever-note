@@ -49,7 +49,7 @@
           :to="`/note?noteId=${note.id}&notebookId=${$route.query.notebookId}`"
         >
           <span class="title">{{ note.title }}</span>
-          <span class="date">{{ note.updatedAtFriendly }}</span>
+          <span class="date">{{ formatDate(note.updatedAt) }}</span>
         </router-link>
       </li>
     </ul>
@@ -60,30 +60,28 @@
 import { Down, Plus, DeleteOne, NotebookOne } from "@icon-park/vue-next";
 import { ElMessage } from "element-plus";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import Notebooks from "@/api/notebooks";
+import Note from "@/api/notes";
+import { formatDate } from "@/helpers/util";
 
 const router = useRouter();
 
+const route = useRoute();
+
 const notebooks = ref();
 
-const notes = ref([
-  {
-    id: 11,
-    title: "这是一个笔记1dasdasdasdasdasdasdasd",
-    updatedAtFriendly: "刚刚",
-  },
-  {
-    id: 22,
-    title: "这是一个笔记2",
-    updatedAtFriendly: "3分钟前",
-  },
-]);
+const notes = ref();
 
 Notebooks.getAllNotebook().then((res: any) => {
-  console.log(res.data);
   notebooks.value = res.data;
 });
+
+Note.getAllNote({ notebookId: Number(route.query.notebookId) }).then(
+  (res: any) => {
+    notes.value = res.data;
+  }
+);
 
 const handleCommand = (command: string | number | object) => {
   if (command === "trash") {
