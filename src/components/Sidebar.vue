@@ -3,7 +3,7 @@
     <div class="sidebar-top">
       <Avatar />
       <div class="sidebar-top-icons">
-        <router-link to="" title="笔记" active-class="checked">
+        <router-link to="/note" title="笔记" active-class="checked">
           <notes theme="outline" size="22" fill="#ffffff" :strokeWidth="3" />
         </router-link>
         <router-link to="/notebooks" title="笔记本" active-class="checked">
@@ -16,7 +16,7 @@
             />
           </i>
         </router-link>
-        <router-link to="" title="回收站" active-class="checked">
+        <router-link to="/trash" title="回收站" active-class="checked">
           <i class="note">
             <delete-one
               theme="outline"

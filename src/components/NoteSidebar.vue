@@ -10,7 +10,7 @@
       @command="handleCommand"
     >
       <span class="el-dropdown-link">
-        笔记本
+        {{ currentNotebook?.title }}
         <down theme="filled" size="20" fill="#4a4a4a" :strokeWidth="3" />
       </span>
       <template #dropdown>
@@ -18,7 +18,7 @@
           <el-dropdown-item
             v-for="notebook in notebooks"
             :key="notebook.id"
-            :command="notebook.id"
+            :command="notebook"
           >
             <notebook-one
               theme="outline"
@@ -46,7 +46,10 @@
     <ul class="notes">
       <li v-for="note in notes" :key="note.id">
         <router-link
-          :to="`/note?noteId=${note.id}&notebookId=${$route.query.notebookId}`"
+          :class="{
+            ['active']: Number($route.query.noteId) === Number(note.id),
+          }"
+          :to="`/note?noteId=${note.id}&notebookId=${currentNotebook.id}`"
         >
           <span class="title">{{ note.title }}</span>
           <span class="date">{{ formatDate(note.updatedAt) }}</span>
@@ -73,19 +76,36 @@ const notebooks = ref();
 
 const notes = ref();
 
-Notebooks.getAllNotebook().then((res: any) => {
-  notebooks.value = res.data;
-});
+const currentNotebook = ref();
 
-Note.getAllNote({ notebookId: Number(route.query.notebookId) }).then(
-  (res: any) => {
-    notes.value = res.data;
-  }
-);
+Notebooks.getAllNotebook()
+  .then((res: any) => {
+    notebooks.value = res.data;
+    currentNotebook.value =
+      notebooks.value.find((notebook: any) => {
+        return Number(notebook.id) === Number(route.query.notebookId);
+      }) ||
+      res.data[0] ||
+      {};
+  })
+  .then(() => {
+    Note.getAllNote({ notebookId: currentNotebook.value.id }).then(
+      (res: any) => {
+        notes.value = res.data;
+      }
+    );
+  });
 
 const handleCommand = (command: string | number | object) => {
   if (command === "trash") {
     router.push("/trash");
+  } else {
+    currentNotebook.value = command;
+    Note.getAllNote({ notebookId: currentNotebook.value.id }).then(
+      (res: any) => {
+        notes.value = res.data;
+      }
+    );
   }
 };
 </script>
