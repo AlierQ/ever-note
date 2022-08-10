@@ -68,6 +68,11 @@ import Notebooks from "@/api/notebooks";
 import Note from "@/api/notes";
 import { formatDate } from "@/helpers/util";
 
+// 接收外部参数，没有使用，可以不接收
+// defineProps(["notes"]);
+
+const emit = defineEmits(["update:notes"]);
+
 const router = useRouter();
 
 const route = useRoute();
@@ -92,6 +97,8 @@ Notebooks.getAllNotebook()
     Note.getAllNote({ notebookId: currentNotebook.value.id }).then(
       (res: any) => {
         notes.value = res.data;
+        // 自定义事件，将notes交给父组件，进行双向绑定
+        emit("update:notes", notes.value);
       }
     );
   });
@@ -104,6 +111,8 @@ const handleCommand = (command: string | number | object) => {
     Note.getAllNote({ notebookId: currentNotebook.value.id }).then(
       (res: any) => {
         notes.value = res.data;
+        emit("update:notes", notes.value);
+        router.push("/note?notebookId=" + currentNotebook.value.id);
       }
     );
   }
