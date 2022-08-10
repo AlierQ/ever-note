@@ -78,6 +78,8 @@ const onUpdateNotebook = (id: number, oldTitle: string) => {
   ElMessageBox.prompt("请输入新的名称", "修改名称", {
     confirmButtonText: "修改",
     cancelButtonText: "取消",
+    inputPattern: /^.{1,30}$/,
+    inputErrorMessage: "标题不能为空，且不能超过30个字符！",
     inputValue: oldTitle,
   })
     .then(({ value }) => {
@@ -96,7 +98,7 @@ const onUpdateNotebook = (id: number, oldTitle: string) => {
         .catch((err) => {
           ElMessage({
             type: "error",
-            message: `修改失败`,
+            message: err.response.data.msg,
           });
         });
     })
@@ -127,9 +129,11 @@ const onDeleteNotebook = (id: number) => {
           });
         })
         .catch((err) => {
+          console.log(err);
+
           ElMessage({
             type: "error",
-            message: `删除失败`,
+            message: err.response.data.msg,
           });
         });
     })
@@ -161,7 +165,7 @@ const onAddNotebook = () => {
         .catch((err) => {
           ElMessage({
             type: "error",
-            message: `创建失败`,
+            message: err.response.data.msg,
           });
         });
     })
