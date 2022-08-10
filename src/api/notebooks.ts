@@ -1,5 +1,4 @@
 import request from "@/helpers/request";
-import { resolve } from "path";
 
 const URL = {
   GET: "/notebooks",
