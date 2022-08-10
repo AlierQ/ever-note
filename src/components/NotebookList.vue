@@ -9,10 +9,11 @@
     <main>
       <h3>笔记本列表({{ notebookList?.length }})</h3>
       <div class="notebook-list">
-        <a
+        <router-link
+          v-for="notebook in notebookList"
+          :to="`/note?notebookID=${notebook.id}`"
           href="javascript:void(0);"
           class="notebook"
-          v-for="notebook in notebookList"
           key="notebook.id"
         >
           <div>
@@ -32,7 +33,7 @@
             >
             <span @click.prevent="onDeleteNotebook(notebook.id)">删除</span>
           </div>
-        </a>
+        </router-link>
       </div>
     </main>
   </div>
