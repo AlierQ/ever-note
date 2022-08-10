@@ -2,7 +2,8 @@
   <div id="note" class="detail">
     <NoteSidebar></NoteSidebar>
     <div class="note-detail">
-      123
+      <h1>{{ msg }} : {{ $route.query.notebookId }}</h1>
+      <h1>noteId : {{ $route.query.noteId }}</h1>
       <!-- <div class="note-empty">请选择笔记</div>
       <div class="note-detail-ct">
         <div class="note-bar">
