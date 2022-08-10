@@ -1,6 +1,7 @@
 <template>
   <div id="notebook-detail">
-    <h1>{{ msg }} : {{ $route.params.noteId }}</h1>
+    <h1>{{ msg }} : {{ $route.query.notebookId }}</h1>
+    <h1>noteId : {{ $route.query.noteId }}</h1>
   </div>
 </template>
 
@@ -16,7 +17,7 @@ Auth.get_login_state().then((ref: any) => {
     router.push("/login");
   }
 });
-const msg = ref("笔记本详情页");
+const msg = ref("notebookId");
 </script>
 
 <style scoped lang="less">
