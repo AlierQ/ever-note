@@ -7,10 +7,10 @@
       </a>
     </header>
     <main>
-      <h3>笔记本列表({{ notebookList?.length }})</h3>
+      <h3>笔记本列表({{ useNotebooks.notebooks?.length }})</h3>
       <div class="notebook-list">
         <router-link
-          v-for="notebook in notebookList"
+          v-for="notebook in useNotebooks.notebooks"
           :to="`/note?notebookId=${notebook.id}`"
           href="javascript:void(0);"
           class="notebook"
@@ -28,10 +28,8 @@
               <span>{{ notebook.noteCounts }}</span>
             </span>
             <span>{{ format_date(notebook.createdAt) }}</span>
-            <span @click.prevent="onUpdateNotebook(notebook.id, notebook.title)"
-              >编辑</span
-            >
-            <span @click.prevent="onDeleteNotebook(notebook.id)">删除</span>
+            <span @click.prevent="onUpdateNotebook(notebook)">编辑</span>
+            <span @click.prevent="onDeleteNotebook(notebook)">删除</span>
           </div>
         </router-link>
       </div>
@@ -40,27 +38,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Auth from "@/api/auth";
 import { Plus, NotebookOne } from "@icon-park/vue-next";
-import Notebooks from "@/api/notebooks";
 import { formatDate } from "@/helpers/util";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { useNotebooksStore } from "@/stores/notebook";
 
-type Notebook = {
-  id: number;
-  noteCounts: number;
-  title: string;
-  createdAt: string;
-  updatedAt: string;
-};
+// pinia全局状态管理
+const useNotebooks = useNotebooksStore();
+// 初始化数据
+useNotebooks.getNotebooks();
 
 const format_date = formatDate;
 
 const router = useRouter();
-
-const notebookList = ref<Notebook[]>();
 
 Auth.get_login_state().then((ref: any) => {
   if (!ref.isLogin) {
@@ -68,40 +60,17 @@ Auth.get_login_state().then((ref: any) => {
   }
 });
 
-const initNotebookList = () => {
-  Notebooks.getAllNotebook().then((res: any) => {
-    notebookList.value = res.data;
-  });
-};
-initNotebookList();
-
-const onUpdateNotebook = (id: number, oldTitle: string) => {
+const onUpdateNotebook = (notebook: any) => {
   ElMessageBox.prompt("请输入新的名称", "修改名称", {
     confirmButtonText: "修改",
     cancelButtonText: "取消",
     inputPattern: /^.{1,30}$/,
     inputErrorMessage: "标题不能为空，且不能超过30个字符！",
-    inputValue: oldTitle,
+    inputValue: notebook.title,
   })
     .then(({ value }) => {
-      Notebooks.updateNotebook(id, { title: value })
-        .then(() => {
-          notebookList.value?.forEach((notebook) => {
-            if (notebook.id === id) {
-              notebook.title = value;
-            }
-          });
-          ElMessage({
-            type: "success",
-            message: `修改成功`,
-          });
-        })
-        .catch((err) => {
-          ElMessage({
-            type: "error",
-            message: err.response.data.msg,
-          });
-        });
+      notebook.title = value;
+      useNotebooks.updateNotebook(notebook);
     })
     .catch(() => {
       ElMessage({
@@ -111,7 +80,7 @@ const onUpdateNotebook = (id: number, oldTitle: string) => {
     });
 };
 
-const onDeleteNotebook = (id: number) => {
+const onDeleteNotebook = (notebook: any) => {
   ElMessageBox.confirm("确认要删除该笔记本吗?", "删除笔记本", {
     confirmButtonText: "删除",
     cancelButtonText: "取消",
@@ -119,24 +88,7 @@ const onDeleteNotebook = (id: number) => {
     type: "error",
   })
     .then(() => {
-      Notebooks.deleteNotebook(id)
-        .then(() => {
-          notebookList.value = notebookList.value?.filter((notebook) => {
-            return notebook.id !== id;
-          });
-          ElMessage({
-            type: "success",
-            message: "删除成功",
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-
-          ElMessage({
-            type: "error",
-            message: err.response.data.msg,
-          });
-        });
+      useNotebooks.deleteNotebook(notebook);
     })
     .catch(() => {
       ElMessage({
@@ -155,21 +107,7 @@ const onAddNotebook = () => {
     inputErrorMessage: "标题不能为空，且不能超过30个字符！",
   })
     .then(({ value }) => {
-      Notebooks.addNotebook({ title: value })
-        .then((res: any) => {
-          res.data.noteCounts = 0;
-          notebookList.value?.unshift(res.data);
-          ElMessage({
-            type: "success",
-            message: `创建成功`,
-          });
-        })
-        .catch((err) => {
-          ElMessage({
-            type: "error",
-            message: err.response.data.msg,
-          });
-        });
+      useNotebooks.addNotebook(value);
     })
     .catch(() => {
       ElMessage({
