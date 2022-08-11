@@ -49,7 +49,11 @@
               @keydown="stateText = '正在输入...'"
               v-model="currentNote.content"
             ></textarea>
-            <div class="preview markdown-body" hidden></div>
+            <div
+              v-show="preview"
+              class="preview markdown-body"
+              v-html="md.render(currentNote.content)"
+            ></div>
           </div>
         </div>
       </div>
@@ -69,6 +73,14 @@ import { formatDate } from "@/helpers/util";
 import { ElMessage, ElMessageBox } from "element-plus";
 import _ from "lodash";
 import { getCurrentInstance } from "vue";
+import MarkdownIt from "markdown-it";
+import mdhighlight from "markdown-it-highlightjs";
+import "@/assets/style/code-style.less";
+import hljs from "highlight.js";
+const md = new MarkdownIt().use(mdhighlight, {
+  auto: true,
+  hljs: hljs,
+});
 
 const instance = getCurrentInstance();
 
@@ -166,6 +178,7 @@ const deleteNote = () => {
 };
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 @import "@/assets/style/note-detail.less";
+@import "@/assets/style/markdown-style.less";
 </style>

@@ -1,0 +1,72 @@
+.markdown-body {
+  > h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #142331;
+    margin: 10px 0;
+  }
+  > p {
+    color: #142331;
+    margin: 8px 0;
+  }
+  > h1 {
+    margin-bottom: 24px;
+    position: relative;
+    text-align: center;
+    font-size: 42px;
+    &::before {
+      content: "";
+      position: absolute;
+      height: 1px;
+      width: 18%;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -4px;
+      border-bottom: 2px dashed #afec9e;
+    }
+  }
+  > h2 {
+    position: relative;
+    border-left: 6px solid #cce5ff;
+    padding-left: 10px;
+    font-size: 32px;
+  }
+  > h3 {
+    position: relative;
+    padding-left: 16px;
+    &::after {
+      content: "•";
+      font-size: 26px;
+      color: #cce5ff;
+      top: 50%;
+      left: 0px;
+      transform: translateY(-50%);
+      position: absolute;
+    }
+    font-size: 28px;
+  }
+  > h4 {
+    position: relative;
+    padding-left: 16px;
+    &::after {
+      content: "-";
+      font-size: 26px;
+      color: #cce5ff;
+      top: 50%;
+      left: 0px;
+      transform: translateY(-50%);
+      position: absolute;
+    }
+    font-size: 24px;
+  }
+  > h5 {
+    font-size: 20px;
+  }
+  > h6 {
+    color: #777;
+    font-size: 16px;
+  }
+}

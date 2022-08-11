@@ -63,16 +63,26 @@
   .editor {
     height: ~"calc(100% - 78px)";
     position: relative;
+    overflow: auto;
+    display: flex;
   }
-  textarea,
   .preview {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    // display: none;
+    width: 50%;
+    height: ~"calc(100vh - 80px)";
+    overflow: auto;
     padding: 20px;
+    border-left: 1px solid rgba(18, 18, 18, 0.08);
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   textarea {
+    // position: absolute;
+    width: 50%;
+    overflow: auto;
+    padding: 20px;
     border: none;
     resize: none;
     outline: none;
@@ -84,6 +94,10 @@
       "Source Han Sans CN", "Microsoft YaHei", "Wenquanyi Micro Hei",
       "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp",
       sans-serif;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   code {
