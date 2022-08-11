@@ -49,11 +49,13 @@
               @keydown="stateText = '正在输入...'"
               v-model="currentNote.content"
             ></textarea>
-            <div
-              v-show="preview"
-              class="preview markdown-body"
-              v-html="md.render(currentNote.content)"
-            ></div>
+            <transition name="preview">
+              <div
+                v-show="preview"
+                class="preview markdown-body"
+                v-html="md.render(currentNote.content)"
+              ></div>
+            </transition>
           </div>
         </div>
       </div>
@@ -181,4 +183,14 @@ const deleteNote = () => {
 <style lang="less">
 @import "@/assets/style/note-detail.less";
 @import "@/assets/style/markdown-style.less";
+
+.preview-enter-active,
+.preview-leave-active {
+  transition: all 0.25s ease;
+}
+
+.preview-enter-from,
+.preview-leave-to {
+  opacity: 0;
+}
 </style>
