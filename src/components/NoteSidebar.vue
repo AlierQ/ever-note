@@ -89,6 +89,7 @@ const handleCommand = (command: string | number | object) => {
   } else {
     useNotebooks.setCurrentNotebook(command);
     useNotes.getNotes();
+    useNotes.setCurrentNote({});
     router.push("/note?notebookId=" + useNotebooks.currentNotebook.id);
   }
 };

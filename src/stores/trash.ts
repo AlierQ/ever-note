@@ -11,8 +11,6 @@ export const useTrashStore = defineStore("trash", {
   actions: {
     getTrashNotes() {
       Trash.getAll().then((res: any) => {
-        console.log(res);
-
         this.setTrashNotes(res.data);
       });
     },
