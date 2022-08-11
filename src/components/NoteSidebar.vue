@@ -1,6 +1,6 @@
 <template>
   <div class="note-sidebar">
-    <span class="add-note" @click="">
+    <span class="add-note" @click="addNote">
       <plus theme="filled" size="18" fill="#4a4a4a" :strokeWidth="3" />
       添加笔记
     </span>
@@ -67,6 +67,9 @@ import { useRouter, useRoute } from "vue-router";
 import Notebooks from "@/api/notebooks";
 import Note from "@/api/notes";
 import { formatDate } from "@/helpers/util";
+import { getCurrentInstance } from "vue";
+
+const instance = getCurrentInstance();
 
 // 接收外部参数，没有使用，可以不接收
 // defineProps(["notes"]);
@@ -117,6 +120,29 @@ const handleCommand = (command: string | number | object) => {
     );
   }
 };
+
+const addNote = () => {
+  Note.addNote(
+    { notebookId: currentNotebook.value.id },
+    { title: "未命名笔记", content: "" }
+  ).then((res: any) => {
+    // 将新数据插入到Notes中
+    notes.value.unshift(res.data);
+    // 跳转url到新增笔记页面
+    router.push(
+      "/note?noteId=" + res.data.id + "&notebookId=" + currentNotebook.value.id
+    );
+  });
+};
+
+// 订阅updateNotes事件，更新Notes
+instance?.proxy?.$Bus.on("updateNotes", () => {
+  Note.getAllNote({ notebookId: currentNotebook.value.id }).then((res: any) => {
+    notes.value = res.data;
+    emit("update:notes", notes.value);
+    router.push("/note?notebookId=" + currentNotebook.value.id);
+  });
+});
 </script>
 
 <style lang="less">

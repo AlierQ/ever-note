@@ -25,7 +25,7 @@
                 :strokeWidth="3"
               />
             </span>
-            <span
+            <span @click="deleteNote"
               ><delete-one
                 theme="outline"
                 size="18"
@@ -68,6 +68,9 @@ import { onBeforeRouteUpdate } from "vue-router";
 import { formatDate } from "@/helpers/util";
 import { ElMessage, ElMessageBox } from "element-plus";
 import _ from "lodash";
+import { getCurrentInstance } from "vue";
+
+const instance = getCurrentInstance();
 
 const router = useRouter();
 
@@ -97,9 +100,11 @@ Auth.get_login_state().then((ref: any) => {
 watchEffect(() => {
   if (notes.value && route.query.noteId) {
     if (notes.value.length === 0) return;
-    currentNote.value = notes.value.filter((note: any) => {
+    console.log(notes.value);
+    const temp = notes.value.filter((note: any) => {
       return Number(route.query.noteId) === Number(note.id);
     })[0];
+    if (temp !== undefined) currentNote.value = temp;
   }
 });
 
@@ -139,6 +144,26 @@ const updateNote = _.debounce(() => {
       stateText.value = "保存失败";
     });
 }, 300);
+
+const deleteNote = () => {
+  Notes.deleteNote({ noteId: Number(currentNote.value.id) })
+    .then((res: any) => {
+      ElMessage({
+        type: "warning",
+        message: res.msg,
+      });
+
+      // 发布事件，让Notes更新
+      instance?.proxy?.$Bus.emit("updateNotes");
+      currentNote.value.id = undefined;
+    })
+    .catch((err) => {
+      ElMessage({
+        type: "error",
+        message: err.response.data.msg,
+      });
+    });
+};
 </script>
 
 <style scoped lang="less">
