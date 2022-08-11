@@ -38,7 +38,10 @@
               type="text"
               placeholder="输入标题"
               @input="updateNote"
-              @keydown="stateText = '正在输入...'"
+              @keydown="
+                stateText = '正在输入...';
+                currentNote.updatedAt = new Date().toISOString();
+              "
               v-model="currentNote.title"
             />
           </div>
@@ -46,7 +49,10 @@
             <textarea
               placeholder="输入内容, 支持 markdown 语法"
               @input="updateNote"
-              @keydown="stateText = '正在输入...'"
+              @keydown="
+                stateText = '正在输入...';
+                currentNote.updatedAt = new Date().toISOString();
+              "
               v-model="currentNote.content"
             ></textarea>
             <transition name="preview">
