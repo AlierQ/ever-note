@@ -1,12 +1,37 @@
 // stores/notebook.js
 import { defineStore } from "pinia";
 import Notebooks from "@/api/notebooks";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
+import Vrouter from "@/router";
+
 export const useNotebooksStore = defineStore("notebooks", {
   state: () => {
-    return { notebooks: [] as any[] };
+    return {
+      notebooks: [] as any[],
+      currentNotebook: {} as any,
+    };
   },
   actions: {
+    getCurrentNotebook() {
+      // const useNotebooks = useNotebooksStore();
+      const route = Vrouter.currentRoute.value;
+      return new Promise((resolve, reject) => {
+        if (route.query.notebookId) {
+          this.notebooks.forEach((notebook) => {
+            if (Number(notebook.id) === Number(route.query.notebookId)) {
+              this.setCurrentNotebook(notebook);
+            }
+          });
+        } else {
+          this.setCurrentNotebook(this.notebooks[0]);
+        }
+        resolve("ok");
+      });
+    },
+
+    setCurrentNotebook(notebook: any) {
+      this.currentNotebook = notebook;
+    },
     setNotebooks(notebooks: []) {
       this.notebooks = notebooks;
     },

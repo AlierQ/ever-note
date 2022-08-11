@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import Notes from "@/api/notes";
-import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-import { useCurrentNotebookStore } from "@/stores/currentNotebooks";
+import { useNotebooksStore } from "@/stores/notebook";
+
 export const useNotesStore = defineStore("notes", {
   state: () => {
     return {
-      notes: null as any,
+      notes: [] as any,
       currentNote: {
         id: undefined,
         title: "",
@@ -18,10 +18,10 @@ export const useNotesStore = defineStore("notes", {
   },
   actions: {
     getNotes() {
-      const useCurrentNotebook = useCurrentNotebookStore();
-      if (useCurrentNotebook.currentNotebook) {
+      const useNotebooks = useNotebooksStore();
+      if (useNotebooks.currentNotebook) {
         Notes.getAllNote({
-          notebookId: useCurrentNotebook.currentNotebook.id,
+          notebookId: useNotebooks.currentNotebook.id,
         }).then((res: any) => {
           this.setNotes(res.data);
         });
@@ -69,21 +69,13 @@ export const useNotesStore = defineStore("notes", {
         });
     },
     addNotes() {
-      const useCurrentNotebook = useCurrentNotebookStore();
-      const router = useRouter();
+      const useNotebooks = useNotebooksStore();
       Notes.addNote(
-        { notebookId: useCurrentNotebook.currentNotebook.id },
+        { notebookId: useNotebooks.currentNotebook.id },
         { title: "未命名笔记", content: "" }
       ).then((res: any) => {
         // 将新数据插入到Notes中
         this.notes.unshift(res.data);
-        // 跳转url到新增笔记页面
-        // router.push(
-        //   "/note?noteId=" +
-        //     res.data.id +
-        //     "&notebookId=" +
-        //     useCurrentNotebook.currentNotebook.id
-        // );
       });
     },
   },

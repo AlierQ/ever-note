@@ -10,7 +10,7 @@
       @command="handleCommand"
     >
       <span class="el-dropdown-link">
-        {{ useCurrentNotebook.currentNotebook?.title }}
+        {{ useNotebooks.currentNotebook?.title }}
         <down theme="filled" size="20" fill="#4a4a4a" :strokeWidth="3" />
       </span>
       <template #dropdown>
@@ -49,7 +49,7 @@
           :class="{
             ['active']: useNotes.currentNote?.id === note.id,
           }"
-          :to="`/note?noteId=${note.id}&notebookId=${useCurrentNotebook.currentNotebook?.id}`"
+          :to="`/note?noteId=${note.id}&notebookId=${useNotebooks.currentNotebook?.id}`"
           @click.prevent="selectedNote(note)"
         >
           <span class="title">{{ note.title }}</span>
@@ -70,16 +70,16 @@ import Note from "@/api/notes";
 import { formatDate } from "@/helpers/util";
 import { getCurrentInstance } from "vue";
 import { useNotebooksStore } from "@/stores/notebook";
-import { useCurrentNotebookStore } from "@/stores/currentNotebooks";
+// import { useCurrentNotebookStore } from "@/stores/currentNotebooks";
 import { useNotesStore } from "@/stores/notes";
 // pinia全局状态管理
 const useNotebooks = useNotebooksStore();
-const useCurrentNotebook = useCurrentNotebookStore();
+// const useCurrentNotebook = useCurrentNotebookStore();
 const useNotes = useNotesStore();
 // 初始化数据
 // onBeforeMount(() => {
 useNotebooks.getNotebooks().then(() => {
-  useCurrentNotebook.getCurrentNotebook().then(() => {
+  useNotebooks.getCurrentNotebook().then(() => {
     useNotes.getNotes();
   });
 });
@@ -98,9 +98,9 @@ const handleCommand = (command: string | number | object) => {
   if (command === "trash") {
     router.push("/trash");
   } else {
-    useCurrentNotebook.setCurrentNotebook(command);
+    useNotebooks.setCurrentNotebook(command);
     useNotes.getNotes();
-    router.push("/note?notebookId=" + useCurrentNotebook.currentNotebook.id);
+    router.push("/note?notebookId=" + useNotebooks.currentNotebook.id);
   }
 };
 
