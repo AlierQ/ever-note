@@ -62,30 +62,19 @@
 
 <script setup lang="ts">
 import { Down, Plus, DeleteOne, NotebookOne } from "@icon-park/vue-next";
-import { ElMessage } from "element-plus";
-import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
-import Notebooks from "@/api/notebooks";
-import Note from "@/api/notes";
 import { formatDate } from "@/helpers/util";
-import { getCurrentInstance } from "vue";
 import { useNotebooksStore } from "@/stores/notebook";
-// import { useCurrentNotebookStore } from "@/stores/currentNotebooks";
 import { useNotesStore } from "@/stores/notes";
 // pinia全局状态管理
 const useNotebooks = useNotebooksStore();
-// const useCurrentNotebook = useCurrentNotebookStore();
 const useNotes = useNotesStore();
 // 初始化数据
-// onBeforeMount(() => {
 useNotebooks.getNotebooks().then(() => {
   useNotebooks.getCurrentNotebook().then(() => {
     useNotes.getNotes();
   });
 });
-// });
-
-const instance = getCurrentInstance();
 
 // 接收外部参数，没有使用，可以不接收
 // defineProps(["notes"]);
