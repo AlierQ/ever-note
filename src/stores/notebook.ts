@@ -106,6 +106,11 @@ export const useNotebooksStore = defineStore("notebooks", {
           });
         });
     },
+    getNotebookTitle(notebookId: any) {
+      return this.notebooks.find((n) => {
+        return n.id === notebookId;
+      });
+    },
   },
   getters: {},
 });
