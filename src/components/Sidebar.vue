@@ -42,11 +42,14 @@ import { Notes, NotebookOne, DeleteOne, Logout } from "@icon-park/vue-next";
 import Avatar from "@/components/Avatar.vue";
 import Auth from "@/api/auth";
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user";
+
+const useUser = useUserStore();
 
 const router = useRouter();
 
 const onLogout = () => {
-  Auth.logout().then((data) => {
+  useUser.logout().then(() => {
     router.push("/login");
   });
 };

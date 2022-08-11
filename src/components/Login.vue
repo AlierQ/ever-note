@@ -65,13 +65,13 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Auth from "@/api/auth";
 import { useRouter } from "vue-router";
-import { getCurrentInstance } from "vue";
+import { useUserStore } from "@/stores/user";
+
+const useUser = useUserStore();
 
 const state = ref(true);
 const router = useRouter();
-const instance = getCurrentInstance();
 
 const login = ref({
   username: "",
@@ -94,6 +94,7 @@ const toggle = () => {
     info: "输入用户名和密码",
     isError: false,
   };
+
   register.value = {
     username: "",
     password: "",
@@ -117,10 +118,11 @@ const onRegister = () => {
   register.value.isError = false;
   register.value.info = "";
 
-  Auth.register({
-    username: register.value.username,
-    password: register.value.password,
-  })
+  useUser
+    .registerUser({
+      username: register.value.username,
+      password: register.value.password,
+    })
     .then((data) => {
       register.value.isError = false;
       register.value.info = "注册成功！";
@@ -148,21 +150,16 @@ const onLogin = () => {
   login.value.isError = false;
   login.value.info = "";
 
-  Auth.login({
-    username: login.value.username,
-    password: login.value.password,
-  })
-    .then((data) => {
+  useUser
+    .loginUser({
+      username: login.value.username,
+      password: login.value.password,
+    })
+    .then((res: any) => {
       // 重置提示信息
       login.value.isError = false;
       login.value.info = "";
-
-      // 发布全局事件总线
-      instance?.proxy?.$Bus.emit("userInfo", {
-        username: login.value.username,
-      });
-
-      // 跳转到笔记本页面
+      useUser.getUser();
       router.push("/notebooks");
     })
     .catch((err) => {

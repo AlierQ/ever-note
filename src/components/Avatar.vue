@@ -1,29 +1,12 @@
 <template>
-  <span :title="username">{{ slug }}</span>
+  <span :title="useUser.user.username">{{ useUser.slug }}</span>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { getCurrentInstance } from "vue";
-import Auth from "@/api/auth";
+import { useUserStore } from "@/stores/user";
 
-const instance = getCurrentInstance();
-
-const username = ref("");
-
-Auth.get_login_state().then((ref: any) => {
-  if (ref.data) username.value = ref.data.username;
-});
-
-// 全局事件总线，登录时触发的username更新
-instance?.proxy?.$Bus.on("userInfo", (data: any) => {
-  username.value = data.username;
-});
-
-// setup 计算属性
-const slug = computed(() => {
-  return username.value.slice(0, 1);
-});
+const useUser = useUserStore();
+useUser.getUser();
 </script>
 
 <style scoped lang="less">
