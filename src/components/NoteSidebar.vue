@@ -47,9 +47,10 @@
       <li v-for="note in useNotes.notes" :key="note.id">
         <router-link
           :class="{
-            ['active']: Number($route.query.noteId) === Number(note.id),
+            ['active']: useNotes.currentNote?.id === note.id,
           }"
           :to="`/note?noteId=${note.id}&notebookId=${useCurrentNotebook.currentNotebook?.id}`"
+          @click.prevent="selectedNote(note)"
         >
           <span class="title">{{ note.title }}</span>
           <span class="date">{{ formatDate(note.updatedAt) }}</span>
@@ -93,8 +94,6 @@ const emit = defineEmits(["update:notes"]);
 
 const router = useRouter();
 
-// const notes = ref();
-
 const handleCommand = (command: string | number | object) => {
   if (command === "trash") {
     router.push("/trash");
@@ -109,16 +108,9 @@ const addNote = () => {
   useNotes.addNotes();
 };
 
-// 订阅updateNotes事件，更新Notes
-// instance?.proxy?.$Bus.on("updateNotes", () => {
-//   Note.getAllNote({ notebookId: useCurrentNotebook.currentNotebook.id }).then(
-//     (res: any) => {
-//       notes.value = res.data;
-//       emit("update:notes", notes.value);
-//       router.push("/note?notebookId=" + useCurrentNotebook.currentNotebook.id);
-//     }
-//   );
-// });
+const selectedNote = (note: any) => {
+  useNotes.setCurrentNote(note);
+};
 </script>
 
 <style lang="less">

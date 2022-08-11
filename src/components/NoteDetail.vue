@@ -1,13 +1,19 @@
 <template>
   <div id="note" class="detail">
-    <NoteSidebar v-model:notes="notes"></NoteSidebar>
+    <NoteSidebar></NoteSidebar>
     <div class="note-detail">
       <div class="note-detail">
-        <div class="note-empty" v-show="!currentNote.id">请选择笔记</div>
-        <div class="note-detail-ct" v-show="currentNote.id">
+        <div class="note-empty" v-show="!useNotes.currentNote.id">
+          请选择笔记
+        </div>
+        <div class="note-detail-ct" v-show="useNotes.currentNote.id">
           <div class="note-bar">
-            <span> 创建日期: {{ formatDate(currentNote.createdAt) }}</span>
-            <span> 更新日期: {{ formatDate(currentNote.updatedAt) }}</span>
+            <span>
+              创建日期: {{ formatDate(useNotes.currentNote.createdAt) }}</span
+            >
+            <span>
+              更新日期: {{ formatDate(useNotes.currentNote.updatedAt) }}</span
+            >
             <span> {{ stateText }}</span>
             <span class="icon-fullscreen" @click="togglePreview">
               <preview-close
@@ -40,9 +46,9 @@
               @input="updateNote"
               @keydown="
                 stateText = '正在输入...';
-                currentNote.updatedAt = new Date().toISOString();
+                useNotes.currentNote.updatedAt = new Date().toISOString();
               "
-              v-model="currentNote.title"
+              v-model="useNotes.currentNote.title"
             />
           </div>
           <div class="editor">
@@ -51,15 +57,15 @@
               @input="updateNote"
               @keydown="
                 stateText = '正在输入...';
-                currentNote.updatedAt = new Date().toISOString();
+                useNotes.currentNote.updatedAt = new Date().toISOString();
               "
-              v-model="currentNote.content"
+              v-model="useNotes.currentNote.content"
             ></textarea>
             <transition name="preview">
               <div
                 v-show="preview"
                 class="preview markdown-body"
-                v-html="md.render(currentNote.content)"
+                v-html="md.render(useNotes.currentNote.content)"
               ></div>
             </transition>
           </div>
@@ -85,29 +91,20 @@ import MarkdownIt from "markdown-it";
 import mdhighlight from "markdown-it-highlightjs";
 import "@/assets/style/code-style.less";
 import hljs from "highlight.js";
+import { useNotesStore } from "@/stores/notes";
+// pinia全局状态管理
+const useNotes = useNotesStore();
+
 const md = new MarkdownIt().use(mdhighlight, {
   auto: true,
   hljs: hljs,
 });
-
-const instance = getCurrentInstance();
 
 const router = useRouter();
 
 const route = useRoute();
 
 const preview = ref(false);
-
-// 当前编辑的note
-const currentNote = ref({
-  id: undefined,
-  title: "",
-  content: "",
-  createdAt: "",
-  updatedAt: "",
-});
-
-const notes = ref();
 
 const stateText = ref("笔记未改动");
 
@@ -118,24 +115,19 @@ Auth.get_login_state().then((ref: any) => {
 });
 
 watchEffect(() => {
-  if (notes.value && route.query.noteId) {
-    if (notes.value.length === 0) return;
-    console.log(notes.value);
-    const temp = notes.value.filter((note: any) => {
+  if (useNotes.notes && route.query.noteId) {
+    if (useNotes.notes.length === 0) return;
+    const temp = useNotes.notes.filter((note: any) => {
       return Number(route.query.noteId) === Number(note.id);
     })[0];
-    if (temp !== undefined) currentNote.value = temp;
-  }
-});
-
-onBeforeRouteUpdate((to, from) => {
-  // 组件内路由更新的时候就将选中的note绑定到currentNote
-  if (to.query.noteId) {
-    currentNote.value = notes.value.filter((note: any) => {
-      return Number(to.query.noteId) === Number(note.id);
-    })[0];
-  } else {
-    currentNote.value.id = undefined;
+    if (temp !== undefined) {
+      useNotes.currentNote = temp;
+    } else {
+      ElMessage({
+        type: "error",
+        message: "访问的笔记不存在",
+      });
+    }
   }
 });
 
@@ -145,15 +137,9 @@ const togglePreview = () => {
 
 // 使用了第三方节流
 const updateNote = _.debounce(() => {
-  console.log("写东西了");
-  Notes.updateNote(
-    { noteId: Number(currentNote.value.id) },
-    {
-      title: currentNote.value.title,
-      content: currentNote.value.content,
-    }
-  )
-    .then((ref) => {
+  useNotes
+    .updateCurrentNote()
+    .then((res) => {
       stateText.value = "已保存";
     })
     .catch((err) => {
@@ -166,23 +152,7 @@ const updateNote = _.debounce(() => {
 }, 300);
 
 const deleteNote = () => {
-  Notes.deleteNote({ noteId: Number(currentNote.value.id) })
-    .then((res: any) => {
-      ElMessage({
-        type: "warning",
-        message: res.msg,
-      });
-
-      // 发布事件，让Notes更新
-      instance?.proxy?.$Bus.emit("updateNotes");
-      currentNote.value.id = undefined;
-    })
-    .catch((err) => {
-      ElMessage({
-        type: "error",
-        message: err.response.data.msg,
-      });
-    });
+  useNotes.deleteCurrentNote();
 };
 </script>
 
