@@ -10,13 +10,13 @@
       @command="handleCommand"
     >
       <span class="el-dropdown-link">
-        {{ currentNotebook?.title }}
+        {{ useCurrentNotebook.currentNotebook!.title }}
         <down theme="filled" size="20" fill="#4a4a4a" :strokeWidth="3" />
       </span>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item
-            v-for="notebook in notebooks"
+            v-for="notebook in useNotebooks.notebooks"
             :key="notebook.id"
             :command="notebook"
           >
@@ -49,7 +49,7 @@
           :class="{
             ['active']: Number($route.query.noteId) === Number(note.id),
           }"
-          :to="`/note?noteId=${note.id}&notebookId=${currentNotebook.id}`"
+          :to="`/note?noteId=${note.id}&notebookId=${useCurrentNotebook.currentNotebook.id}`"
         >
           <span class="title">{{ note.title }}</span>
           <span class="date">{{ formatDate(note.updatedAt) }}</span>
@@ -63,11 +63,20 @@
 import { Down, Plus, DeleteOne, NotebookOne } from "@icon-park/vue-next";
 import { ElMessage } from "element-plus";
 import { ref } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import Notebooks from "@/api/notebooks";
 import Note from "@/api/notes";
 import { formatDate } from "@/helpers/util";
 import { getCurrentInstance } from "vue";
+import { useNotebooksStore } from "@/stores/notebook";
+import { useCurrentNotebookStore } from "@/stores/currentNotebooks";
+
+// pinia全局状态管理
+const useNotebooks = useNotebooksStore();
+const useCurrentNotebook = useCurrentNotebookStore();
+// 初始化数据
+useNotebooks.getNotebooks();
+useCurrentNotebook.getCurrentNotebook();
 
 const instance = getCurrentInstance();
 
@@ -78,26 +87,16 @@ const emit = defineEmits(["update:notes"]);
 
 const router = useRouter();
 
-const route = useRoute();
-
 const notebooks = ref();
 
 const notes = ref();
 
-const currentNotebook = ref();
-
 Notebooks.getAllNotebook()
   .then((res: any) => {
     notebooks.value = res.data;
-    currentNotebook.value =
-      notebooks.value.find((notebook: any) => {
-        return Number(notebook.id) === Number(route.query.notebookId);
-      }) ||
-      res.data[0] ||
-      {};
   })
   .then(() => {
-    Note.getAllNote({ notebookId: currentNotebook.value.id }).then(
+    Note.getAllNote({ notebookId: useCurrentNotebook.currentNotebook.id }).then(
       (res: any) => {
         notes.value = res.data;
         // 自定义事件，将notes交给父组件，进行双向绑定
@@ -110,12 +109,14 @@ const handleCommand = (command: string | number | object) => {
   if (command === "trash") {
     router.push("/trash");
   } else {
-    currentNotebook.value = command;
-    Note.getAllNote({ notebookId: currentNotebook.value.id }).then(
+    useCurrentNotebook.setCurrentNotebook(command);
+    Note.getAllNote({ notebookId: useCurrentNotebook.currentNotebook.id }).then(
       (res: any) => {
         notes.value = res.data;
         emit("update:notes", notes.value);
-        router.push("/note?notebookId=" + currentNotebook.value.id);
+        router.push(
+          "/note?notebookId=" + useCurrentNotebook.currentNotebook.id
+        );
       }
     );
   }
@@ -123,25 +124,30 @@ const handleCommand = (command: string | number | object) => {
 
 const addNote = () => {
   Note.addNote(
-    { notebookId: currentNotebook.value.id },
+    { notebookId: useCurrentNotebook.currentNotebook.id },
     { title: "未命名笔记", content: "" }
   ).then((res: any) => {
     // 将新数据插入到Notes中
     notes.value.unshift(res.data);
     // 跳转url到新增笔记页面
     router.push(
-      "/note?noteId=" + res.data.id + "&notebookId=" + currentNotebook.value.id
+      "/note?noteId=" +
+        res.data.id +
+        "&notebookId=" +
+        useCurrentNotebook.currentNotebook.id
     );
   });
 };
 
 // 订阅updateNotes事件，更新Notes
 instance?.proxy?.$Bus.on("updateNotes", () => {
-  Note.getAllNote({ notebookId: currentNotebook.value.id }).then((res: any) => {
-    notes.value = res.data;
-    emit("update:notes", notes.value);
-    router.push("/note?notebookId=" + currentNotebook.value.id);
-  });
+  Note.getAllNote({ notebookId: useCurrentNotebook.currentNotebook.id }).then(
+    (res: any) => {
+      notes.value = res.data;
+      emit("update:notes", notes.value);
+      router.push("/note?notebookId=" + useCurrentNotebook.currentNotebook.id);
+    }
+  );
 });
 </script>
 
