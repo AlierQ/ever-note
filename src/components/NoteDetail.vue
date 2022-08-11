@@ -79,14 +79,11 @@
 import { ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Auth from "@/api/auth";
-import Notes from "@/api/notes";
 import NoteSidebar from "@/components/NoteSidebar.vue";
 import { DeleteOne, PreviewClose, PreviewOpen } from "@icon-park/vue-next";
-import { onBeforeRouteUpdate } from "vue-router";
 import { formatDate } from "@/helpers/util";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
 import _ from "lodash";
-import { getCurrentInstance } from "vue";
 import MarkdownIt from "markdown-it";
 import mdhighlight from "markdown-it-highlightjs";
 import "@/assets/style/code-style.less";
@@ -153,6 +150,7 @@ const updateNote = _.debounce(() => {
 
 const deleteNote = () => {
   useNotes.deleteCurrentNote();
+  router.push(`/note?notebookId=${route.query.notebookId}`);
 };
 </script>
 
