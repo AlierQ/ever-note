@@ -12,8 +12,15 @@ export const useNotebooksStore = defineStore("notebooks", {
     },
 
     getNotebooks() {
-      Notebooks.getAllNotebook().then((res: any) => {
-        this.setNotebooks(res.data);
+      return new Promise((resolve, reject) => {
+        Notebooks.getAllNotebook()
+          .then((res: any) => {
+            this.setNotebooks(res.data);
+            resolve("ok");
+          })
+          .catch((err) => {
+            reject(err);
+          });
       });
     },
 

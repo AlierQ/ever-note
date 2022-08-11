@@ -12,7 +12,7 @@ const instance = getCurrentInstance();
 const username = ref("");
 
 Auth.get_login_state().then((ref: any) => {
-  username.value = ref.data.username;
+  if (ref.data) username.value = ref.data.username;
 });
 
 // 全局事件总线，登录时触发的username更新
