@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import Notes from "@/api/notes";
 import { ElMessage } from "element-plus";
 import { useNotebooksStore } from "@/stores/notebook";
-
+import Vrouter from "@/router";
 export const useNotesStore = defineStore("notes", {
   state: () => {
     return {
@@ -18,12 +18,19 @@ export const useNotesStore = defineStore("notes", {
   },
   actions: {
     getNotes() {
+      const router = Vrouter;
       const useNotebooks = useNotebooksStore();
       if (useNotebooks.currentNotebook) {
         Notes.getAllNote({
           notebookId: useNotebooks.currentNotebook.id,
         }).then((res: any) => {
           this.setNotes(res.data);
+          if (this.notes[0]) {
+            this.setCurrentNote(this.notes[0]);
+            router.push(
+              `/note?noteId=${this.notes[0].id}&notebookId=${useNotebooks.currentNotebook.id}`
+            );
+          }
         });
       }
     },
@@ -43,11 +50,11 @@ export const useNotesStore = defineStore("notes", {
         }
       );
     },
-    deleteCurrentNote() {
+    deleteCurrentNote(currentNoteId: any) {
       Notes.deleteNote({ noteId: this.currentNote.id })
         .then((res: any) => {
           this.notes = this.notes.filter((note: any) => {
-            return note.id !== this.currentNote.id;
+            return Number(note.id) !== Number(currentNoteId);
           });
           this.currentNote = {
             id: undefined,

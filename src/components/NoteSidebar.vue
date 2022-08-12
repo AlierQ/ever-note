@@ -79,8 +79,6 @@ useNotebooks.getNotebooks().then(() => {
 // 接收外部参数，没有使用，可以不接收
 // defineProps(["notes"]);
 
-const emit = defineEmits(["update:notes"]);
-
 const router = useRouter();
 
 const handleCommand = (command: string | number | object) => {
@@ -89,7 +87,7 @@ const handleCommand = (command: string | number | object) => {
   } else {
     useNotebooks.setCurrentNotebook(command);
     useNotes.getNotes();
-    useNotes.setCurrentNote({});
+    useNotes.setCurrentNote({ title: "", content: "" });
     router.push("/note?notebookId=" + useNotebooks.currentNotebook.id);
   }
 };

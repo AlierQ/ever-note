@@ -125,6 +125,8 @@ watchEffect(() => {
         message: "访问的笔记不存在",
       });
     }
+  } else {
+    useNotes.setCurrentNote({ title: "", content: "" });
   }
 });
 
@@ -149,7 +151,7 @@ const updateNote = _.debounce(() => {
 }, 300);
 
 const deleteNote = () => {
-  useNotes.deleteCurrentNote();
+  useNotes.deleteCurrentNote(useNotes.currentNote.id);
   router.push(`/note?notebookId=${route.query.notebookId}`);
 };
 </script>

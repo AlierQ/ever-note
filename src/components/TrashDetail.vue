@@ -118,6 +118,8 @@ watchEffect(() => {
         message: "访问的笔记不存在",
       });
     }
+  } else {
+    useTrash.setCurrentNote({ title: "", content: "" });
   }
 });
 
