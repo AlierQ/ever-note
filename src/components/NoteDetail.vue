@@ -40,6 +40,7 @@
                 fill="#aaa"
                 :strokeWidth="3"
               />
+              <span>&nbsp;预览</span>
             </span>
             <span @click="deleteNote"
               ><delete-one
@@ -47,7 +48,9 @@
                 size="18"
                 fill="#aaa"
                 :strokeWidth="3"
-            /></span>
+              />
+              <span>&nbsp;放入回收站</span>
+            </span>
           </div>
           <div class="note-title">
             <input
