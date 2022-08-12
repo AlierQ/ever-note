@@ -3,11 +3,11 @@
     <transition name="sidebar">
       <NoteSidebar v-show="isVisible"></NoteSidebar>
     </transition>
-    <div class="toggle-sidebar">
-      <span v-show="isVisible" @click="toggleVisible"
+    <div class="toggle-sidebar" @click="toggleVisible">
+      <span v-show="isVisible"
         ><left theme="outline" size="24" fill="#4a4a4a" :strokeWidth="3"
       /></span>
-      <span v-show="!isVisible" @click="toggleVisible"
+      <span v-show="!isVisible"
         ><right theme="outline" size="24" fill="#4a4a4a" :strokeWidth="3"
       /></span>
     </div>
