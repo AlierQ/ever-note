@@ -54,11 +54,18 @@ const format_date = formatDate;
 
 const router = useRouter();
 
-Auth.get_login_state().then((ref: any) => {
-  if (!ref.isLogin) {
-    router.push("/login");
-  }
-});
+Auth.get_login_state()
+  .then((ref: any) => {
+    if (!ref.isLogin) {
+      router.push("/login");
+    }
+  })
+  .catch((err) => {
+    ElMessage({
+      type: "error",
+      message: err.response.data.msg,
+    });
+  });
 
 const onUpdateNotebook = (notebook: any) => {
   ElMessageBox.prompt("请输入新的名称", "修改名称", {

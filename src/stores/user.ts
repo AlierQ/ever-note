@@ -11,7 +11,11 @@ export const useUserStore = defineStore("user", {
     getUser() {
       Auth.get_login_state().then((res: any) => {
         this.setUser(res.data);
-        this.slug = this.user.username.slice(0, 1);
+        if (this.user) {
+          this.slug = this.user.username.slice(0, 1);
+        } else {
+          this.slug = "";
+        }
       });
     },
     setUser(user: any) {

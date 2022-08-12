@@ -1,5 +1,5 @@
 <template>
-  <span :title="useUser.user.username">{{ useUser.slug }}</span>
+  <span :title="useUser.user?.username">{{ useUser.slug }}</span>
 </template>
 
 <script setup lang="ts">
