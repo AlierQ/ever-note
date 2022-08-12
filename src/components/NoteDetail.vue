@@ -101,7 +101,7 @@ const router = useRouter();
 
 const route = useRoute();
 
-const preview = ref(false);
+const preview = ref(true);
 
 const stateText = ref("笔记未改动");
 
