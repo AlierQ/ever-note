@@ -76,9 +76,6 @@ useNotebooks.getNotebooks().then(() => {
   });
 });
 
-// 接收外部参数，没有使用，可以不接收
-// defineProps(["notes"]);
-
 const router = useRouter();
 
 const handleCommand = (command: string | number | object) => {

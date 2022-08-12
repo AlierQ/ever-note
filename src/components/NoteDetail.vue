@@ -1,6 +1,16 @@
 <template>
   <div id="note" class="detail">
-    <NoteSidebar></NoteSidebar>
+    <transition name="sidebar">
+      <NoteSidebar v-show="isVisible"></NoteSidebar>
+    </transition>
+    <div class="toggle-sidebar">
+      <span v-show="isVisible" @click="toggleVisible"
+        ><left theme="outline" size="24" fill="#4a4a4a" :strokeWidth="3"
+      /></span>
+      <span v-show="!isVisible" @click="toggleVisible"
+        ><right theme="outline" size="24" fill="#4a4a4a" :strokeWidth="3"
+      /></span>
+    </div>
     <div class="note-detail">
       <div class="note-detail">
         <div class="note-empty" v-show="!useNotes.currentNote.id">
@@ -80,7 +90,13 @@ import { ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Auth from "@/api/auth";
 import NoteSidebar from "@/components/NoteSidebar.vue";
-import { DeleteOne, PreviewClose, PreviewOpen } from "@icon-park/vue-next";
+import {
+  DeleteOne,
+  PreviewClose,
+  PreviewOpen,
+  Left,
+  Right,
+} from "@icon-park/vue-next";
 import { formatDate } from "@/helpers/util";
 import { ElMessage } from "element-plus";
 import _ from "lodash";
@@ -96,6 +112,8 @@ const md = new MarkdownIt().use(mdhighlight, {
   auto: true,
   hljs: hljs,
 });
+
+const isVisible = ref(true);
 
 const router = useRouter();
 
@@ -134,6 +152,10 @@ const togglePreview = () => {
   preview.value = !preview.value;
 };
 
+const toggleVisible = () => {
+  isVisible.value = !isVisible.value;
+};
+
 // 使用了第三方节流
 const updateNote = _.debounce(() => {
   useNotes
@@ -167,6 +189,17 @@ const deleteNote = () => {
 
 .preview-enter-from,
 .preview-leave-to {
+  opacity: 0;
+}
+
+.sidebar-enter-active,
+.sidebar-leave-active {
+  transition: all 0.15s ease;
+}
+
+.sidebar-enter-from,
+.sidebar-leave-to {
+  width: 0;
   opacity: 0;
 }
 </style>
