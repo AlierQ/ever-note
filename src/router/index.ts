@@ -1,8 +1,10 @@
 import { createWebHashHistory, createRouter } from "vue-router";
 import Login from "@/components/Login.vue";
-import NotebookList from "@/components/NotebookList.vue";
-import NoteDetail from "@/components/NoteDetail.vue";
-import TrashDetail from "@/components/TrashDetail.vue";
+// 路由懒加载
+const NotebookList = () => import("@/components/NotebookList.vue");
+const NoteDetail = () => import("@/components/NoteDetail.vue");
+const TrashDetail = () => import("@/components/TrashDetail.vue");
+
 const history = createWebHashHistory();
 
 const router = createRouter({
