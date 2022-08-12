@@ -10,17 +10,13 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      alias: "/notebooks",
       component: NotebookList,
     },
     {
       path: "/login",
       name: "Login",
       component: Login,
-    },
-    {
-      path: "/notebooks",
-      name: "NotebookList",
-      component: NotebookList,
     },
     {
       path: "/note",
