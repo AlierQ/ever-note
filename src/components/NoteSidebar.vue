@@ -10,7 +10,7 @@
       @command="handleCommand"
     >
       <span class="el-dropdown-link">
-        {{ useNotebooks.currentNotebook?.title }}
+        {{ useNotebooks.currentNotebook?.title || "暂无笔记本" }}
         <down theme="filled" size="20" fill="#4a4a4a" :strokeWidth="3" />
       </span>
       <template #dropdown>
